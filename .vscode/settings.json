@@ -1,0 +1,73 @@
+{
+    "files.eol": "\n",
+    "editor.tabSize": 2,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true
+    },
+    "eslint.validate": [
+        "typescript",
+        "typescriptreact",
+        "javascript",
+        "javascriptreact"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+    },
+    "prettier.requireConfig": true,
+    "css.validate": false,
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "tailwindCSS.rootFontSize": 10,
+    "tailwindCSS.classAttributes": [
+        "class",
+        "className",
+        "ngClass",
+        "boxClass"
+    ],
+    "tailwindCSS.includeLanguages": {
+        "plaintext": "html",
+        "html": "html",
+        "css": "css",
+        "javascript": "javascript",
+        "typescript": "typescript",
+        "typescriptreact": "html"
+    },
+    "eslint.enable": true,
+    "git.mergeEditor": false,
+    "typescript.referencesCodeLens.enabled": true,
+    "files.associations": {
+        "*.json": "jsonc"
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "yarn.lock": true
+    },
+}
