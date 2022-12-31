@@ -1,7 +1,7 @@
 {
   "verbose": false,
-  "debug": false,
-  "exec": "ts-node ./src/index.ts",
+  "debug": true,
+  "exec": "ts-node -r tsconfig-paths/register ./src/index.ts --files",
   "ignore": [
     "mochawesome-report",
     "node_modules",

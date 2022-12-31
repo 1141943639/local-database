@@ -1,12 +1,8 @@
 module.exports = {
   extends: ['./base.js'],
-  globals: {},
-  rules: {
-    'import/order': [
-      'error',
-    ],
-    'import/no-unresolved': 'error',
-    'import/no-anonymous-default-export': 'off',
-    'import/named': 'error',
+  parserOptions: {
+    sourceType: 'module',
+    "ecmaVersion": 7,
   },
+  parser: '@typescript-eslint/parser'
 };

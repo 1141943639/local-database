@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "es5",
     "lib": [
-      "dom",
-      "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    // "typeRoots": [
+    //   "./node_modules/@types",
+    //   "./src/types"
+    // ],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -18,7 +19,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "baseUrl": "src",
+    "baseUrl": "./src",
+    "sourceMap": true,
+    "noImplicitAny": true,
     "types": [
       "node"
     ]
@@ -28,6 +31,5 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
   ]
 }

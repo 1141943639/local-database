@@ -1,10 +1,10 @@
-export default {
+module.exports = {
   extends: ['./eslint-config'],
-  ignorePatterns: ['*.d.ts'],
+  ignorePatterns: ['*.d.ts', '.eslintrc.js', 'eslint-config/*'],
   settings: {
     'import/resolver': {
       typescript: true,
       node: true,
     },
-  },
+  }
 };

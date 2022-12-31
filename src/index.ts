@@ -1,3 +1,9 @@
-console.log('123')
+import app from "app"
+import config from 'config'
 
-export default 124
+const { APP_PORT} = config
+
+app.listen(APP_PORT, () => {
+  console.log(`\x1B[32mhttp://localhost:${APP_PORT}`)
+})
+export default app
