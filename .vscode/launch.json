@@ -7,7 +7,7 @@
     {
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "name": "debug",
+      "name": "dev",
       "program": "${workspaceFolder}/src/index.ts",
       "request": "launch",
       "restart": true,
