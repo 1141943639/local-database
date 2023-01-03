@@ -6,11 +6,10 @@
   "author": "graeme yan <graemyan@cherrypicks.com>",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env nodemon src/index.ts"
+    "start": "cross-env nodemon src/index.ts",
+    "lint": "cross-env eslint **/*.ts"
   },
   "dependencies": {
-    "@types/koa": "^2.13.5",
-    "@typescript-eslint/parser": "^5.47.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "koa": "^2.13.4",
@@ -23,9 +22,12 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/koa": "^2.13.5",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.18",
     "@types/uuid": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.3.0",

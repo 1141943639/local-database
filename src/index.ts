@@ -1,9 +1,9 @@
-import app from "app"
-import config from 'config'
+import app from 'app';
+import config from 'config';
 
-const { APP_PORT} = config
+const { APP_PORT } = config;
 
 app.listen(APP_PORT, () => {
-  console.log(`\x1B[32mhttp://localhost:${APP_PORT}`)
-})
-export default app
+  console.log(`\x1B[32mhttp://localhost:${APP_PORT}`);
+});
+export default app;

@@ -5,14 +5,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
     },
-    "[javascriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true
-    },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
@@ -29,11 +21,10 @@
         "editor.defaultFormatter": "vscode.json-language-features",
         "editor.formatOnSave": true
     },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.validate": [
         "typescript",
-        "typescriptreact",
         "javascript",
-        "javascriptreact"
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true,
@@ -42,21 +33,6 @@
     "css.validate": false,
     "editor.quickSuggestions": {
         "strings": true
-    },
-    "tailwindCSS.rootFontSize": 10,
-    "tailwindCSS.classAttributes": [
-        "class",
-        "className",
-        "ngClass",
-        "boxClass"
-    ],
-    "tailwindCSS.includeLanguages": {
-        "plaintext": "html",
-        "html": "html",
-        "css": "css",
-        "javascript": "javascript",
-        "typescript": "typescript",
-        "typescriptreact": "html"
     },
     "eslint.enable": true,
     "git.mergeEditor": false,
