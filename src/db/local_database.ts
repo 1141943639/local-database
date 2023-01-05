@@ -1,9 +1,7 @@
 import LocalDatabase from 'local_database';
 
-const ldb = new LocalDatabase({
-  rootFolderName: '124',
-});
+const localDB = new LocalDatabase();
 
-ldb.init();
+localDB.init();
 
-export default ldb;
+export default localDB;

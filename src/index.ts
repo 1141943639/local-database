@@ -1,10 +1,10 @@
 import app from 'app';
 import config from 'config';
-import ldb from 'db/local_database';
+import User from 'model/user.model';
 
 const { APP_PORT } = config;
 
-ldb;
+User;
 
 app.listen(APP_PORT, () => {
   console.log(`\x1B[32mhttp://localhost:${APP_PORT}`);

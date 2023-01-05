@@ -1,5 +1,5 @@
-import ldb from 'db/local_database';
+import testDB from 'db/test.DB';
 
-const User = ldb;
+const User = testDB.defineTable('testTable');
 
-export default ldb;
+export default User;
