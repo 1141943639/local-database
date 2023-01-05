@@ -1,7 +1,7 @@
 import { resolve } from 'path';
-import { LocalDatabasePropsType } from 'types/local_database/local_database_type';
+import { LocalDatabasePropsType } from 'local_database/types/local_database_type';
 import { ROOT_FOLDER_NAME } from './common/constant';
-import Database from './database';
+import Table from './table';
 
 class LocalDatabase {
   public ROOT_PATH = resolve('./');
@@ -16,8 +16,8 @@ class LocalDatabase {
       (this.ROOT_FOLDER_NAME = this.props?.rootFolderName);
   }
 
-  define(): Database {
-    return new Database(this);
+  define(): Table {
+    return new Table(this);
   }
 }
 
