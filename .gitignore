@@ -7,7 +7,6 @@
 node_modules/
 dist/
 build/
-local_database/
 
 # Compiled Java class files
 *.class

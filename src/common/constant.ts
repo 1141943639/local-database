@@ -1,0 +1,1 @@
+export const MAX_STR_LENGTH = 512000000;
