@@ -6,9 +6,11 @@ import {
   createWriteStream,
   fstat,
   readdirSync,
+  rename,
+  renameSync,
   write,
 } from 'fs';
-import { ensureFileSync, copyFileSync, unlinkSync } from 'fs-extra';
+import { ensureFileSync, copyFileSync, unlinkSync, remove } from 'fs-extra';
 import { isPlainObject, last, random } from 'lodash';
 import moment from 'moment';
 import { resolve } from 'path';
@@ -18,23 +20,58 @@ import { v4 as uuid } from 'uuid';
 import Parse from 'jsonparse';
 import { readLine, writeLine } from 'lei-stream';
 import User from 'model/user.model';
+import { FILE_FLAG } from 'local_database/common/enum';
+import HandleFile from 'local_database/utils/handle_file';
+import es from 'event-stream';
 
 const parse = new Parse();
 
 const { APP_PORT } = config;
 
-User.create({});
+// User.create({});
 
 // app.listen(APP_PORT, () => {
 //   console.log(`\x1B[32mhttp://localhost:${APP_PORT}`);
 // });
 
-// const path = resolve('./database/test/testTable.json');
-// const tempDataPath = resolve('./database/test/testTable.temp.json');
-// ensureFileSync(path);
-// ensureFileSync(tempDataPath);
+const path = resolve('./database/test/testTable.json');
+const tempDataPath = resolve('./database/test/testTable.temp.json');
+ensureFileSync(path);
+ensureFileSync(tempDataPath);
 
-// // const read = readLine(createReadStream(path));
+const rs = createReadStream(path);
+const ws = createWriteStream(tempDataPath);
+
+let count = 0;
+
+rs.pipe(es.split('\n'))
+  .pipe(
+    es.map((value, cb) => {
+      count++;
+      if (count === 2) {
+        cb(null, 'test12412421412\n');
+      }
+
+      cb(null, value + '\n');
+
+      console.log(value, typeof value);
+    })
+  )
+  .pipe(ws);
+
+rs.on('close', () => {
+  ws.end();
+});
+
+ws.on('close', () => {
+  renameSync(tempDataPath, path);
+});
+
+// ws.on('close', () => {
+//   const rs = createReadStream(tempDataPath);
+//   const ws = createWriteStream(path);
+//   rs.pipe(ws);
+// });
 
 // const ws = writeLine(createWriteStream(tempDataPath), {
 //   cacheLines: 10000,
