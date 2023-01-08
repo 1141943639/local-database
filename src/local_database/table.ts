@@ -1,53 +1,59 @@
 import Database from './database';
 import LocalDatabase from './local_database';
-import {
-  ensureFileSync,
-  readJsonSync,
-  writeJson,
-  writeJsonSync,
-} from 'fs-extra';
-import { join } from 'path';
-import { chunk, isEmpty } from 'lodash';
-import { MAX_SIMULTANEOUS_WRITE_NUMBER } from './common/constant';
+import { join, resolve } from 'path';
+import { isArray, isPlainObject } from 'lodash';
+import ReadWrite from './read_write';
+import { v4 as uuid } from 'uuid';
+import { fork } from 'child_process';
 
-class Table {
+class Table<T = unknown> {
   public NAME: string;
   public localDB: LocalDatabase;
   public database: Database;
-  private tempData: unknown[];
   constructor(localDB: LocalDatabase, database: Database, name: string) {
     this.NAME = name;
     this.localDB = localDB;
     this.database = database;
-
-    const path = this.getPath();
-
-    ensureFileSync(path);
-    let data = readJsonSync(path, { throws: false });
-
-    if (isEmpty(data)) {
-      data = Array.from({ length: 1000000 }).map(() => {
-        const obj: {
-          [props: string]: number;
-        } = {};
-
-        Array.from({ length: 50 }).forEach((_, index) => {
-          obj[String(index)] = index;
-        });
-
-        return obj;
-      });
-
-      writeJsonSync(path, data);
-    }
-
-    this.tempData = data;
-
-    console.log(this.tempData.length);
   }
 
-  getPath(): string {
-    return join(this.database.getPath(), `${this.NAME}.json`);
+  getFolderPath(): string {
+    return join(this.database.getPath(), `${this.NAME}`);
+  }
+
+  create(data: T | T[]): Table<T> {
+    const objData = data as T;
+    const arrData = data as T[];
+    const finalData = (() => {
+      if (isPlainObject(objData)) {
+        return [objData];
+      } else if (isArray(arrData)) {
+        return arrData;
+      }
+    })();
+
+    if (!finalData) return this;
+
+    const readWrite = new ReadWrite<{
+      [props: string]: string;
+    }>(this.getFolderPath());
+
+    readWrite.read();
+
+    // readWrite.add(
+    //   Array.from({
+    //     length: 100000,
+    //   }).map(() => {
+    //     const obj: { [props: string]: string } = {};
+
+    //     Array.from({ length: 20 }).forEach((v, index) => {
+    //       obj[`user_name_${index}`] = uuid();
+    //     });
+
+    //     return obj;
+    //   })
+    // );
+
+    return this;
   }
 }
 

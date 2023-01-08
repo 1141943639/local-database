@@ -46,4 +46,7 @@
         "**/*.code-search": true,
         "yarn.lock": true
     },
+    "cSpell.words": [
+        "jsonparse"
+    ],
 }

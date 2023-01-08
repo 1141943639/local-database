@@ -21,13 +21,13 @@
     "noEmit": true,
     "baseUrl": "./src",
     "sourceMap": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "types": [
       "node"
     ]
   },
   "include": [
-    "src"
+    "src",
   ],
   "exclude": [
     "node_modules",
