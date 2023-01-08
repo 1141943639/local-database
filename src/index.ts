@@ -28,7 +28,7 @@ const parse = new Parse();
 
 const { APP_PORT } = config;
 
-// User.create({});
+User.create({});
 
 // app.listen(APP_PORT, () => {
 //   console.log(`\x1B[32mhttp://localhost:${APP_PORT}`);
@@ -47,14 +47,16 @@ let count = 0;
 rs.pipe(es.split('\n'))
   .pipe(
     es.map((value, cb) => {
-      count++;
-      if (count === 2) {
-        cb(null, 'test12412421412\n');
+      if (value) {
+        count++;
+        if (count === 2) {
+          cb(null, 'test12412421412\n');
+        }
+
+        cb(null, value + '\n');
+
+        console.log(value, typeof value);
       }
-
-      cb(null, value + '\n');
-
-      console.log(value, typeof value);
     })
   )
   .pipe(ws);

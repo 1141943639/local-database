@@ -197,7 +197,6 @@ export default class ReadWrite<T> {
       const t = moment();
       const ws = createWriteStream(option.path, {
         flags: FILE_FLAG.READ_APPEND,
-        start: option.length,
       });
 
       await this.dataToString(option.data, async (str) => {

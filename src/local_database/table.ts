@@ -37,7 +37,7 @@ class Table<T = unknown> {
       [props: string]: string;
     }>(this.getFolderPath());
 
-    readWrite.read();
+    // readWrite.read();
 
     // readWrite.add(
     //   Array.from({
