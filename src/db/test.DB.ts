@@ -1,3 +1,3 @@
-import localDB from './local_database';
+import LocalDatabase from 'local_database';
 
-export default localDB.defineDatabase('test');
+export default LocalDatabase.defineDatabase('test');

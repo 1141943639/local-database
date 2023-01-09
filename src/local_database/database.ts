@@ -6,17 +6,14 @@ import { DefineDatabaseAttributesType } from './types/database_type';
 
 class Database {
   private attributes?: DefineDatabaseAttributesType;
-  private localDB: LocalDatabase;
   public NAME: string;
 
   constructor(
-    localDB: LocalDatabase,
     name: string,
     attr?: DefineDatabaseAttributesType,
     option?: object
   ) {
     this.attributes = attr;
-    this.localDB = localDB;
     this.NAME = name;
   }
 
@@ -25,13 +22,13 @@ class Database {
   }
 
   defineTable(name: string): Table {
-    const table = new Table(this.localDB, this, name);
+    const table = new Table(this, name);
 
     return table;
   }
 
   getPath(): string {
-    return join(this.localDB.getPath(), this.NAME);
+    return join(LocalDatabase.getFolderPath(), this.NAME);
   }
 }
 

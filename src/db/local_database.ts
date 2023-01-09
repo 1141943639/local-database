@@ -1,7 +1,6 @@
 import LocalDatabase from 'local_database';
 
-const localDB = new LocalDatabase();
+LocalDatabase.init();
 
-localDB.init();
-
+const localDB = LocalDatabase.go();
 export default localDB;

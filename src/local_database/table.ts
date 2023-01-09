@@ -8,11 +8,9 @@ import { fork } from 'child_process';
 
 class Table<T = unknown> {
   public NAME: string;
-  public localDB: LocalDatabase;
   public database: Database;
-  constructor(localDB: LocalDatabase, database: Database, name: string) {
+  constructor(database: Database, name: string) {
     this.NAME = name;
-    this.localDB = localDB;
     this.database = database;
   }
 
@@ -20,7 +18,7 @@ class Table<T = unknown> {
     return join(this.database.getPath(), `${this.NAME}`);
   }
 
-  create(data: T | T[]): Table<T> {
+  async create(data: T | T[]): Promise<T | T[] | false> {
     const objData = data as T;
     const arrData = data as T[];
     const finalData = (() => {
@@ -31,29 +29,13 @@ class Table<T = unknown> {
       }
     })();
 
-    if (!finalData) return this;
+    if (!finalData) return false;
 
-    const readWrite = new ReadWrite<{
-      [props: string]: string;
-    }>(this.getFolderPath());
+    const readWrite = new ReadWrite<typeof objData>(this.getFolderPath());
 
-    // readWrite.read();
+    readWrite.read();
 
-    // readWrite.add(
-    //   Array.from({
-    //     length: 100000,
-    //   }).map(() => {
-    //     const obj: { [props: string]: string } = {};
-
-    //     Array.from({ length: 20 }).forEach((v, index) => {
-    //       obj[`user_name_${index}`] = uuid();
-    //     });
-
-    //     return obj;
-    //   })
-    // );
-
-    return this;
+    return readWrite.add(finalData);
   }
 }
 

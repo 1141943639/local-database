@@ -1,9 +1,30 @@
-import { ensureFileSync, createReadStream, ensureDirSync } from 'fs-extra';
+import {
+  ensureFileSync,
+  createReadStream,
+  ensureDirSync,
+  ensureLink,
+} from 'fs-extra';
 import { join } from 'path';
-import { cloneDeep, find, isArray, isEmpty, last, omit, orderBy } from 'lodash';
+import {
+  cloneDeep,
+  find,
+  isArray,
+  isEmpty,
+  isFunction,
+  last,
+  omit,
+  orderBy,
+} from 'lodash';
 import { readLine } from 'lei-stream';
 import { jsonParse, jsonStr } from 'utils/json';
-import { createWriteStream, readdirSync, stat, Stats, unlink } from 'fs';
+import {
+  createWriteStream,
+  readdirSync,
+  readFile,
+  stat,
+  Stats,
+  unlink,
+} from 'fs';
 import { each } from 'async';
 import { FileDetailType, ReadOptionType } from './types/read_write_type';
 import { FILE_FLAG } from './common/enum';
@@ -11,11 +32,12 @@ import HandleFile from './utils/handle_file';
 import moment from 'moment';
 import fsWrap from './utils/fs_wrap';
 import es from 'event-stream';
+import LocalDatabase from './local_database';
 
 export default class ReadWrite<T> {
   FOLDER_PATH: string;
   ALL_FILES: FileDetailType<T>[] = [];
-  MAX_ROW = 200000;
+  MAX_ROWS = 5000;
 
   constructor(folderPath: string) {
     this.FOLDER_PATH = folderPath;
@@ -35,28 +57,23 @@ export default class ReadWrite<T> {
 
   readDir(): string[] {
     ensureDirSync(this.FOLDER_PATH);
-    return readdirSync(this.FOLDER_PATH);
+    return readdirSync(this.FOLDER_PATH).filter((val) => /.json$/.test(val));
   }
 
-  read = async (option?: ReadOptionType<T>): Promise<void> => {
+  read = async (option?: ReadOptionType<T>): Promise<T[]> => {
     const { callback, fileNames } = option || {};
     const time = moment();
     const fileNameArr = (fileNames || this.readDir()).filter((val) => val);
-    const filesPath = fileNameArr
+    const filesPathArr = fileNameArr
       .filter((val) => !val.includes('temp'))
       .map((val) => join(this.FOLDER_PATH, val));
-    const allRs: unknown[] = [];
-    const detailArr: FileDetailType<T>[] = [];
+    const allData: T[] = [];
 
-    await each(filesPath, (path, close) => {
-      const t = moment();
-      const read = createReadStream(path);
+    await each(filesPathArr, async (path, cb) => {
       let detail = find(this.ALL_FILES, { path });
       const cbOption = {
         path,
       };
-
-      allRs.push(read);
 
       if (!detail) {
         const obj = this.getDefaultFileDetail({
@@ -66,41 +83,33 @@ export default class ReadWrite<T> {
         detail = obj;
       }
 
-      read.pipe(es.split('\n')).pipe(
-        es.map((str: string, cb) => {
+      (await fsWrap<[Buffer]>((cb) => readFile(path, cb)))
+        .toString()
+        .split('\n')
+        .forEach((str) => {
           const data: T | undefined = jsonParse(str);
 
-          if (data) {
-            let count = 0;
-            Object.keys(data).forEach(() => count++);
-            cloneDeep(data);
+          if (!data) return;
 
+          if (isFunction(callback)) {
             const isMatch = callback?.(data, cbOption);
-            if (isMatch && data) {
+            if (isMatch) {
               detail?.data.push(data);
             }
-
-            (detail?.lines || detail?.lines === 0) && detail.lines++;
-            (detail?.length || detail?.length === 0) &&
-              (detail.length += str.length);
           }
-          cb();
-        })
-      );
 
-      read.on('end', () => {
-        console.log('单份文件读取时长', moment().diff(t, 'second'), path);
-        detail && detailArr.push(detail);
-        close();
-      });
+          allData.push(data);
 
-      read.on('error', (err) => {
-        console.error(err);
-        close();
-      });
+          (detail?.lines || detail?.lines === 0) && detail.lines++;
+          (detail?.length || detail?.length === 0) &&
+            (detail.length += str.length);
+        });
+
+      cb();
     });
-    console.log('读取总时长', moment().diff(time, 'second'));
+    console.log('读取总时长', moment().diff(time) / 1000, '秒');
     await this._GC();
+    return allData;
   };
 
   getMinLinesFiles(): FileDetailType<T> {
@@ -143,7 +152,11 @@ export default class ReadWrite<T> {
     });
   }
 
-  async add(data: T[] | T): Promise<void> {
+  getMaxRows(): number {
+    return LocalDatabase.MAX_ROWS;
+  }
+
+  async add(data: T[] | T): Promise<T[] | T> {
     const time = moment();
     ensureDirSync(this.FOLDER_PATH);
     const lastFile = last(orderBy(this.readDir()));
@@ -153,12 +166,17 @@ export default class ReadWrite<T> {
     });
     const lastFileDetail = last(orderBy(this.ALL_FILES, 'path'));
     const finalData = isArray(data) ? (data as T[]) : [data as T];
+    const maxRows = this.getMaxRows();
+
+    console.log(maxRows);
 
     const getFileDetail = () => {
       let count = finalData.length;
-      let fileList = [lastFileDetail].filter(
-        (val) => val && val.lines < this.MAX_ROW
-      );
+      let fileList = [lastFileDetail].filter((val) => {
+        if (!val) return false;
+        if (!maxRows) return true;
+        return val.lines < maxRows;
+      });
       const arr: FileDetailType<T>[] = [];
 
       while (count) {
@@ -166,8 +184,14 @@ export default class ReadWrite<T> {
           fileList.push(this.addNewChunk());
         }
         const detail = fileList[0] as FileDetailType<T>;
-        const remainingLines = this.MAX_ROW - detail.lines;
+        const remainingLines = maxRows && maxRows - detail.lines;
         const { dataCount, newCount } = (() => {
+          if (!maxRows)
+            return {
+              dataCount: count,
+              newCount: 0,
+            };
+
           if (remainingLines < count) {
             return {
               dataCount: remainingLines,
@@ -203,42 +227,15 @@ export default class ReadWrite<T> {
         ws.write(str + '\n');
       });
 
-      ws.end();
+      await fsWrap((cb) => ws.end(cb));
 
-      console.log(moment().diff(t, 'second'));
+      console.log('单个文件写入时长', moment().diff(t, 'second'));
       callback();
-
-      // const tempPath = this.genTempFile(option.path);
-      // const rs = readLine(createReadStream(option.path));
-      // const tempWs = writeLine(createWriteStream(option.path));
-
-      // rs.on('data', (chunk) => {
-      //   tempWs.write(chunk);
-      //   rs.next();
-      // });
-
-      // await new Promise((resolve): void => {
-      //   rs.on('end', async () => {
-      //     await this.dataToString(option.data, (str) => {
-      //       tempWs.write(str);
-      //     });
-      //     tempWs.end();
-      //     resolve(undefined);
-      //   });
-      // });
-
-      // tempWs.end();
-
-      // const tempRs = createReadStream(tempPath);
-      // const ws = createWriteStream(option.path);
-
-      // setTimeout(() => {
-      //   tempRs.pipe(ws);
-      // }, 1000);
-      // tempRs.on('close', clearAll);
     });
 
     console.log('写入总时长', moment().diff(time, 'second'));
+
+    return data;
   }
 
   async _GC(): Promise<void> {

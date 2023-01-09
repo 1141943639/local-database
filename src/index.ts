@@ -23,51 +23,83 @@ import User from 'model/user.model';
 import { FILE_FLAG } from 'local_database/common/enum';
 import HandleFile from 'local_database/utils/handle_file';
 import es from 'event-stream';
+import LocalDatabase from 'local_database';
+import localDB from 'db/local_database';
 
 const parse = new Parse();
 
 const { APP_PORT } = config;
 
-User.create({});
+(async () => {
+  await localDB;
+
+  User.create(
+    Array.from({
+      length: 0,
+    }).map(() => {
+      const obj: { [props: string]: string } = {};
+
+      Array.from({ length: 20 }).forEach((v, index) => {
+        obj[`user_name_${index}`] = uuid();
+      });
+
+      return obj;
+    })
+  );
+})();
+
+// User.create(
+//   Array.from({
+//     length: 10,
+//   }).map(() => {
+//     const obj: { [props: string]: string } = {};
+
+//     Array.from({ length: 20 }).forEach((v, index) => {
+//       obj[`user_name_${index}`] = uuid();
+//     });
+
+//     return obj;
+//   })
+// );
 
 // app.listen(APP_PORT, () => {
 //   console.log(`\x1B[32mhttp://localhost:${APP_PORT}`);
 // });
 
-const path = resolve('./database/test/testTable.json');
-const tempDataPath = resolve('./database/test/testTable.temp.json');
-ensureFileSync(path);
-ensureFileSync(tempDataPath);
+// const path = resolve('./database/test/testTable.json');
+// const tempDataPath = resolve('./database/test/testTable.temp.json');
+// ensureFileSync(path);
+// ensureFileSync(tempDataPath);
 
-const rs = createReadStream(path);
-const ws = createWriteStream(tempDataPath);
+// const rs = createReadStream(path);
+// const ws = createWriteStream(tempDataPath);
 
-let count = 0;
+// let count = 0;
 
-rs.pipe(es.split('\n'))
-  .pipe(
-    es.map((value, cb) => {
-      if (value) {
-        count++;
-        if (count === 2) {
-          cb(null, 'test12412421412\n');
-        }
+// rs.pipe(es.split('\n'))
+//   .pipe(
+//     es.map((value, cb) => {
+//       if (value) {
+//         count++;
+//         if (count === 2) {
+//           cb(null, 'test12412421412\n');
+//         }
 
-        cb(null, value + '\n');
+//         cb(null, value + '\n');
 
-        console.log(value, typeof value);
-      }
-    })
-  )
-  .pipe(ws);
+//         console.log(value, typeof value);
+//       }
+//     })
+//   )
+//   .pipe(ws);
 
-rs.on('close', () => {
-  ws.end();
-});
+// rs.on('close', () => {
+//   ws.end();
+// });
 
-ws.on('close', () => {
-  renameSync(tempDataPath, path);
-});
+// ws.on('close', () => {
+//   renameSync(tempDataPath, path);
+// });
 
 // ws.on('close', () => {
 //   const rs = createReadStream(tempDataPath);
