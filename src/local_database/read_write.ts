@@ -37,7 +37,6 @@ import LocalDatabase from './local_database';
 export default class ReadWrite<T> {
   FOLDER_PATH: string;
   ALL_FILES: FileDetailType<T>[] = [];
-  MAX_ROWS = 5000;
 
   constructor(folderPath: string) {
     this.FOLDER_PATH = folderPath;
@@ -57,7 +56,9 @@ export default class ReadWrite<T> {
 
   readDir(): string[] {
     ensureDirSync(this.FOLDER_PATH);
-    return readdirSync(this.FOLDER_PATH).filter((val) => /.json$/.test(val));
+    return readdirSync(this.FOLDER_PATH).filter((val) =>
+      /table_\d+.json$/.test(val)
+    );
   }
 
   read = async (option?: ReadOptionType<T>): Promise<T[]> => {
@@ -83,27 +84,29 @@ export default class ReadWrite<T> {
         detail = obj;
       }
 
-      (await fsWrap<[Buffer]>((cb) => readFile(path, cb)))
+      const dataArr = (await fsWrap<[Buffer]>((cb) => readFile(path, cb)))
         .toString()
-        .split('\n')
-        .forEach((str) => {
-          const data: T | undefined = jsonParse(str);
+        .split('\n');
 
-          if (!data) return;
+      dataArr.forEach((str) => {
+        const data: T | undefined = jsonParse(str);
 
-          if (isFunction(callback)) {
-            const isMatch = callback?.(data, cbOption);
-            if (isMatch) {
-              detail?.data.push(data);
-            }
+        if (!data) return;
+
+        if (isFunction(callback)) {
+          const isMatch = callback?.(data, cbOption);
+          if (isMatch) {
+            detail?.data.push(data);
           }
+        }
 
-          allData.push(data);
+        allData.push(data);
 
-          (detail?.lines || detail?.lines === 0) && detail.lines++;
-          (detail?.length || detail?.length === 0) &&
-            (detail.length += str.length);
-        });
+        (detail?.length || detail?.length === 0) &&
+          (detail.length += str.length);
+      });
+
+      detail.lines = dataArr.length;
 
       cb();
     });
@@ -153,7 +156,7 @@ export default class ReadWrite<T> {
   }
 
   getMaxRows(): number {
-    return LocalDatabase.MAX_ROWS;
+    return LocalDatabase?.config?.maxRows || 0;
   }
 
   async add(data: T[] | T): Promise<T[] | T> {
@@ -167,8 +170,6 @@ export default class ReadWrite<T> {
     const lastFileDetail = last(orderBy(this.ALL_FILES, 'path'));
     const finalData = isArray(data) ? (data as T[]) : [data as T];
     const maxRows = this.getMaxRows();
-
-    console.log(maxRows);
 
     const getFileDetail = () => {
       let count = finalData.length;

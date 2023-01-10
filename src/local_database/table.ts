@@ -33,9 +33,11 @@ class Table<T = unknown> {
 
     const readWrite = new ReadWrite<typeof objData>(this.getFolderPath());
 
+    await readWrite.read();
     readWrite.read();
 
-    return readWrite.add(finalData);
+    // return readWrite.add(finalData);
+    return [];
   }
 }
 

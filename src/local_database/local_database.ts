@@ -5,32 +5,57 @@ import {
   ROOT_FOLDER_NAME,
 } from './common/constant';
 import Database from './database';
-import { ensureDirSync, remove } from 'fs-extra';
+import { ensureDirSync, ensureFileSync, remove } from 'fs-extra';
 import { DefineDatabaseAttributesType } from './types/database_type';
 import moment from 'moment';
 import ReadWrite from './read_write';
 import { v4 as uuid } from 'uuid';
+import { readFile, readFileSync, writeFile, writeFileSync } from 'fs';
+import { jsonParse, jsonStr } from 'utils/json';
+import { set } from 'lodash';
 
 class LocalDatabase {
   static ROOT_PATH = resolve('./');
   static ROOT_FOLDER_NAME = ROOT_FOLDER_NAME;
   // TODO  需要维护数据库配置项, 每次init都重新加载配置项
-  static ROOT_CONFIG_FOLDER = 'database_config';
-
-  static MAX_ROWS: number = 0;
-  static option?: LocalDatabaseOptionType;
+  static ROOT_CONFIG_FILE_NAME = 'database_config.json';
+  static config?: LocalDatabaseOptionType;
   private constructor() {}
 
-  static init(option?: LocalDatabaseOptionType): LocalDatabase {
+  static getConfigPath(): string {
+    const path = join(this.getFolderPath(), `${this.ROOT_CONFIG_FILE_NAME}`);
+    ensureFileSync(path);
+
+    return path;
+  }
+
+  static syncConfig() {
+    const data: LocalDatabaseOptionType | undefined = jsonParse(
+      readFileSync(this.getConfigPath()).toString()
+    );
+
+    const newConfig = {
+      ...this.config,
+      ...data,
+    } as LocalDatabaseOptionType;
+
+    this.config = newConfig;
+
+    writeFileSync(this.getConfigPath(), jsonStr(newConfig));
+  }
+
+  static init(config?: LocalDatabaseOptionType): LocalDatabase {
     ensureDirSync(join(this.getFolderPath()));
 
-    this.option = option;
+    this.config = config;
 
     return this;
   }
 
-  static async go(): Promise<void> {
-    await this.checkMaxRows();
+  static async start(): Promise<void> {
+    await this.syncConfig();
+    !this?.config?.maxRows && (await this.checkMaxRows());
+    await this.syncConfig();
   }
 
   static async checkMaxRows(): Promise<void> {
@@ -65,8 +90,10 @@ class LocalDatabase {
       count++;
     }
 
-    this.MAX_ROWS = Math.floor(
-      maxRowArr.reduce((pre, v) => pre + v, 0) / maxRowArr.length
+    set(
+      this.config || {},
+      'maxRows',
+      Math.floor(maxRowArr.reduce((pre, v) => pre + v, 0) / maxRowArr.length)
     );
   }
 

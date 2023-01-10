@@ -35,7 +35,7 @@ const { APP_PORT } = config;
 
   User.create(
     Array.from({
-      length: 0,
+      length: 100000,
     }).map(() => {
       const obj: { [props: string]: string } = {};
 
