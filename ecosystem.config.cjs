@@ -10,7 +10,7 @@ module.exports = {
       error_file: './logs/error_logs.log',
       source_map_support: true,
       exec_mode: 'cluster',
-      instances: 'max',
+      instances: 1,
       env: {
         APP_PORT: 8090,
       },

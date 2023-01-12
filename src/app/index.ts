@@ -1,8 +1,4 @@
-import Koa from 'koa';
-import koaBody from 'koa-body';
+import express from 'express';
 
-const app = new Koa();
-
-app.use(koaBody()); // body解析
-
+const app = express();
 export default app;

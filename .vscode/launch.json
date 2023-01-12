@@ -16,7 +16,7 @@
     {
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "name": "dev",
+      "name": "dev:nodemon",
       "program": "${workspaceFolder}/src/index.ts",
       "request": "launch",
       "restart": true,
@@ -25,7 +25,7 @@
         "<node_internals>/**"
       ],
       "runtimeArgs": [
-        "start"
+        "dev:nodemon"
       ],
       "type": "node"
     },
