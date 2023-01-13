@@ -1,5 +1,5 @@
 import { Mode, open, OpenMode, PathLike, write, fsync, close } from 'fs';
-import fsWrap from './fs_wrap';
+import fsWrap from '../../utils/fs_wrap';
 
 export default class HandleFile {
   fd?: number;

@@ -30,7 +30,7 @@ import { FileDetailType, ReadOptionType } from './types/read_write_type';
 import { FILE_FLAG } from './common/enum';
 import HandleFile from './utils/handle_file';
 import moment from 'moment';
-import fsWrap from './utils/fs_wrap';
+import fsWrap from '../utils/fs_wrap';
 import es from 'event-stream';
 import LocalDatabase from './local_database';
 
