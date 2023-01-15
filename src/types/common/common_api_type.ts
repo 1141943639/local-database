@@ -1,8 +1,5 @@
-import { ErrorCode, ErrorCodeValueType } from 'common/code';
-import { ValueOf } from 'types/utils_type';
-
-export interface CommonRes<T = unknown> {
-  code: string;
-  result: T;
+export interface CommonResType<T = unknown> {
+  code: number;
+  result: T | null;
   message: string;
 }

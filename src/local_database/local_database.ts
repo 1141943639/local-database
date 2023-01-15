@@ -17,7 +17,6 @@ import { set } from 'lodash';
 class LocalDatabase {
   static ROOT_PATH = resolve('./');
   static ROOT_FOLDER_NAME = ROOT_FOLDER_NAME;
-  // TODO  需要维护数据库配置项, 每次init都重新加载配置项
   static ROOT_CONFIG_FILE_NAME = 'database_config.json';
   static config?: LocalDatabaseOptionType;
   private constructor() {}

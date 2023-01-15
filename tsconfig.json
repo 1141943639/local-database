@@ -24,10 +24,15 @@
     "noImplicitAny": false,
     "types": [
       "node"
+    ],
+    "typeRoots": [
+      "./src/types",
+      "node_modules/@types"
     ]
   },
   "include": [
     "src",
+    "index.d.ts",
   ],
   "exclude": [
     "node_modules",
