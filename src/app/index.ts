@@ -2,6 +2,7 @@ import express from 'express';
 import errorHandleMiddleWare from 'middleware/error_handle_middleware';
 import initRequestStateMiddleware from 'middleware/init_request_state_middleware';
 import mountRouter from 'routes';
+import 'db';
 
 const app = express();
 

@@ -1,14 +1,13 @@
+import config from 'config';
 import knex from 'knex';
 
 const sqlite = knex({
   client: 'sqlite3',
   connection: () => ({
-    filename: process.env.SQLITE_FILE_NAME,
-    asyncStackTraces: process.env.NODE_ENV === 'develop',
-    debug: process.env.NODE_ENV === 'develop',
+    filename: config.SQLITE_FILE_NAME,
+    asyncStackTraces: config.NODE_ENV === 'develop',
+    debug: config.NODE_ENV === 'develop',
   }),
 });
 
-console.log(process.env.NODE_ENV);
-
-export default {};
+export default sqlite;
