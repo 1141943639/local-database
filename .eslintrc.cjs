@@ -24,7 +24,7 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error'],
     // 是否检查变量已申明但未使用：警告。
-    '@typescript-eslint/no-unused-vars': ['warn'],
+    '@typescript-eslint/no-unused-vars': ['warn', { args: 'after-used' }],
     // 强制单引号：开启，自动修正
     quotes: ['error', 'single'],
     // 强制分号：js 关闭，ts 强制分号。

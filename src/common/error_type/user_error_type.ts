@@ -5,7 +5,7 @@ let userErrorType: {
 } = {
   testError: {
     errorCode: 1000,
-    message: '测试错误',
+    message: '密码格式错误',
   },
 };
 

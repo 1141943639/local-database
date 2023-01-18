@@ -13,8 +13,8 @@ export default class CommonError implements CommonErrorType {
   errorCode: number = DEFAULT_ERROR_CODE;
   error: Error = new Error(this.message);
 
-  constructor(res: Partial<CommonErrorType>) {
-    const { message, httpStatus, errorCode } = res;
+  constructor(res?: Partial<CommonErrorType>) {
+    const { message, httpStatus, errorCode } = res || {};
     message && (this.message = message);
     httpStatus && (this.httpStatus = httpStatus);
     errorCode && (this.errorCode = errorCode);

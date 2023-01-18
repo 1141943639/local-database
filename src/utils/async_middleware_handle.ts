@@ -30,10 +30,15 @@ export const asyncMiddlewareHandle = <T extends (...rest: any) => any>(
 
         // 替换next方法
         rest.splice(-1, 1, next);
-        // 执行中间件
-        let res = handle.call(bindObj, ...rest);
+        let res;
         // 判断next是否被执行
         let isExecutedNext = false;
+
+        try {
+          res = handle.call(bindObj, ...rest);
+        } catch (err) {
+          !isExecutedNext && next(err);
+        }
 
         // 处理异步的错误
         if (isPromise(res)) {
