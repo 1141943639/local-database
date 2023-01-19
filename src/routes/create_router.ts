@@ -13,9 +13,7 @@ export const createRouter = (option?: CreateRouterOption): MyRouter => {
 export const createRouterJsonParse: typeof createRouter = (...arg) => {
   const router = createRouter(...arg);
 
-  router.use(json(), (req, res, next) => {
-    next();
-  });
+  router.use(json());
 
   return router;
 };

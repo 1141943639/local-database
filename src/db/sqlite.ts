@@ -2,6 +2,7 @@ import config from 'config';
 import { ensureFileSync } from 'fs-extra';
 import knex from 'knex';
 import { resolve } from 'path';
+import { UserModelType } from 'types/model/user_model_type';
 
 const path = resolve('./', 'db', `${config.SQLITE_FILE_NAME}.sqlite3`);
 ensureFileSync(path);
