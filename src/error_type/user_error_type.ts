@@ -1,14 +1,20 @@
-import { CommonErrRes } from 'common/common_res';
 import { maxTemp, minTemp, requiredTemp } from './template';
 
 let userErrorType = {
-  usernameRequired: new CommonErrRes(requiredTemp, 1000),
-  usernameMin: new CommonErrRes(minTemp, 1001),
-  usernameMax: new CommonErrRes(maxTemp, 1002),
-  passwordRequired: new CommonErrRes(requiredTemp, 1003),
-  passwordMin: new CommonErrRes(minTemp, 1004),
-  passwordMax: new CommonErrRes(maxTemp, 1005),
-  usernameDup: new CommonErrRes('same username already exists', 1006),
+  usernameRequired: { message: requiredTemp, code: 1000 },
+  usernameMin: { message: minTemp, code: 1001 },
+  usernameMax: { message: maxTemp, code: 1002 },
+  passwordRequired: { message: requiredTemp, code: 1003 },
+  passwordMin: { message: minTemp, code: 1004 },
+  passwordMax: { message: maxTemp, code: 1005 },
+  usernameDup: {
+    message: 'same username already exists',
+    code: 1006,
+  },
+  usernameNotExist: {
+    message: 'username not exist',
+    code: 1007,
+  },
 };
 
 export default userErrorType;

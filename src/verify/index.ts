@@ -17,14 +17,14 @@ export default async function validate<T = unknown, TContext extends {} = {}>(
   } catch (e) {
     const err = e as ValidationError;
 
-    throw err.message;
+    throw new CommonErrRes(err.message);
   }
   return res;
 }
 
 export const handleErrMsg =
-  (errType: CommonErrRes) =>
-  (data: object): CommonErrRes => {
+  (errType: CommonErrorType) =>
+  (data: object): CommonErrorType => {
     errType.message =
       errType?.message?.replace(/{{[\d|\D]+?}}/g, (subString) => {
         const key = subString.replace(/{{([\d|\D]+)}}/, '$1');

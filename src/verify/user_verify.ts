@@ -17,9 +17,14 @@ export const registerSchema = object({
     'checkDup',
     handleErrMsg(userErrorType.usernameDup),
     async (value) => {
-      const res = await userService.sqlite.where('username', value).select('*');
+      const res = await userService.where('username', value);
       return !res?.[0];
     }
   ),
+  password: passwordSchema,
+});
+
+export const loginSchema = object({
+  username: usernameSchema,
   password: passwordSchema,
 });

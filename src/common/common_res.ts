@@ -1,4 +1,4 @@
-import { CommonResType } from 'types/common/common_api_type';
+import { CommonResType } from 'types/common/common_res_type';
 import {
   DEFAULT_ERROR_CODE,
   DEFAULT_ERROR_HTTP_STATUS,
@@ -28,24 +28,31 @@ export class CommonRes<T = unknown> implements CommonResType<T | null> {
 
 export class CommonErrRes extends CommonRes<null> {
   httpStatus: number = DEFAULT_ERROR_HTTP_STATUS;
-  getError(): Error {
-    return new Error(this.message);
-  }
-  getHttpStatus(): number {
-    return this.httpStatus;
-  }
+  error: Error = new Error(this.message);
 
-  constructor(message?: string, code?: number, httpStatus?: number) {
-    const errRes = {
+  constructor(
+    message?: string | Partial<CommonResType<null>>,
+    code?: number,
+    httpStatus?: number
+  ) {
+    let errRes = {
       message: DEFAULT_ERROR_MESSAGE,
       code: DEFAULT_ERROR_CODE,
     };
+    if (typeof message === 'object') {
+      errRes = {
+        ...errRes,
+        ...message,
+      };
+    } else if (typeof message === 'string') {
+      message && (errRes.message = message);
+    }
 
-    message && (errRes.message = message);
     code && (errRes.code = code);
 
     super(errRes);
     httpStatus && (this.httpStatus = httpStatus);
+    this.error = new Error(this.message);
   }
 }
 

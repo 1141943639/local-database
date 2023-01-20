@@ -1,11 +1,15 @@
 import { USER } from 'common/table_name';
+import { ExpandService } from 'types/common/common_service_type';
 import { UserModelType } from 'types/model/user_model_type';
-import { CommonService } from '../common/common_service';
+import { commonService } from '../common/common_service';
 
-class UserService extends CommonService<UserModelType> {
-  constructor() {
-    super(USER);
-  }
-}
+export const userService = (() => {
+  const service = commonService<UserModelType>(USER);
 
-export const userService = new UserService();
+  service.create = async (exec) => {
+    let res = await exec;
+    return res;
+  };
+
+  return service as typeof service & Required<ExpandService<UserModelType>>;
+})();

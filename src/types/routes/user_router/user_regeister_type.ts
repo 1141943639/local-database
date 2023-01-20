@@ -1,4 +1,4 @@
-import { CommonResType } from 'types/common/common_api_type';
+import { CommonResType } from 'types/common/common_res_type';
 
 export interface RegisterResBodyType {
   username: string;

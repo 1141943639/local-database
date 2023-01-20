@@ -2,6 +2,7 @@ import { CommonErrRes } from 'common/common_res';
 import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import { isNativeError } from 'util/types';
+import { CommonErrorType } from 'types/error_type';
 
 export default function errorHandleMiddleWare(
   err: CommonErrRes | Error,
@@ -20,8 +21,8 @@ export default function errorHandleMiddleWare(
     commonError = new CommonErrRes(config.NODE_ENV === 'develop' ? err : '');
   }
 
-  res?.status?.(commonError.getHttpStatus());
-  console.error(commonError.getError());
+  res?.status?.(commonError.httpStatus);
+  console.error(commonError.error);
   res.json(commonError.getResult());
 
   next();
