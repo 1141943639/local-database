@@ -1,37 +1,29 @@
-import CommonError from 'common/common_error';
 import { CommonErrRes } from 'common/common_res';
-import { DEFAULT_ERROR_HTTP_STATUS } from 'common/constant';
 import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import { isNativeError } from 'util/types';
+import { CommonErrorType } from 'types/error_type';
 
 export default function errorHandleMiddleWare(
-  err: CommonError | Error,
+  err: CommonErrRes | Error,
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
-  const commonError = err as CommonError;
-  res?.status?.(commonError?.httpStatus || DEFAULT_ERROR_HTTP_STATUS);
+  let commonError = err as CommonErrRes;
 
-  // 处理原生错误
+  // 将原生错误转为自定义错误
   if (isNativeError(err)) {
-    console.error(err);
-    res.json(
-      new CommonErrRes({
-        message: config.NODE_ENV === 'develop' ? err.message : '',
-      })
+    commonError = new CommonErrRes(
+      config.NODE_ENV === 'develop' ? err.message : ''
     );
-  } else {
-    // 处理自定义错误
-    console.error(err.error);
-    res.json(
-      new CommonErrRes({
-        message: err.message,
-        code: err.errorCode,
-      })
-    );
+  } else if (!(err instanceof CommonErrRes)) {
+    commonError = new CommonErrRes(config.NODE_ENV === 'develop' ? err : '');
   }
+
+  res?.status?.(commonError.httpStatus);
+  console.error(commonError.error);
+  res.json(commonError.getResult());
 
   next();
 }
