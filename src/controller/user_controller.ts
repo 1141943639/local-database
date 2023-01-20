@@ -11,7 +11,7 @@ class UserController {
     res,
     next
   ) => {
-    const newUser = await userService.create(userService.insert(req.body, '*'));
+    const newUser = await userService.create(req.body);
     res.json(new CommonSuccessRes(newUser));
     next();
   };

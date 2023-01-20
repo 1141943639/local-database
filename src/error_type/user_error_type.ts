@@ -15,6 +15,10 @@ let userErrorType = {
     message: 'username not exist',
     code: 1007,
   },
+  userCreateFail: {
+    message: 'user creation failed',
+    code: 1008,
+  },
 };
 
 export default userErrorType;
