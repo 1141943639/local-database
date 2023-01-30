@@ -8,7 +8,7 @@ declare namespace Express {
 declare global {
   namespace Express {
     interface Request {
-      state?: InitRequestStateMiddlewareData;
+      state: InitRequestStateMiddlewareData;
     }
   }
 }

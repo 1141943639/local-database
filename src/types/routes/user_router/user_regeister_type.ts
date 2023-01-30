@@ -4,9 +4,9 @@ export interface RegisterResBodyType {
   username: string;
 }
 
-export interface RegisterReqType {
+export interface UserRegisterReqType {
   username: string;
   password: string;
 }
 
-export type RegisterResType = CommonResType<RegisterResBodyType>;
+export type UserRegisterResType = CommonResType<RegisterResBodyType>;

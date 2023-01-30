@@ -19,6 +19,14 @@ let userErrorType = {
     message: 'user creation failed',
     code: 1008,
   },
+  userNotFound: {
+    message: 'user not found',
+    code: 1008,
+  },
+  incorrectPassword: {
+    message: 'incorrect password',
+    code: 1009,
+  },
 };
 
 export default userErrorType;

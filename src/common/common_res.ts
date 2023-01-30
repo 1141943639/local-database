@@ -30,6 +30,8 @@ export class CommonErrRes extends CommonRes<null> {
   httpStatus: number = DEFAULT_ERROR_HTTP_STATUS;
   error: Error = new Error(this.message);
 
+  constructor(config: Partial<CommonResType<null>>);
+  constructor(message?: string, code?: number, httpStatus?: number);
   constructor(
     message?: string | Partial<CommonResType<null>>,
     code?: number,

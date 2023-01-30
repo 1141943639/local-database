@@ -6,8 +6,8 @@ import 'db';
 
 const app = express();
 
-// 挂载路由
 app.use(initRequestStateMiddleware());
+// 挂载路由
 mountRouter(app);
 app.use(errorHandleMiddleWare);
 

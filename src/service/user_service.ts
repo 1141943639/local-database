@@ -15,7 +15,13 @@ const service = () => {
       throw new CommonErrRes(userErrorType.userCreateFail);
     }
   };
-  const expand = { create };
+  const checkHasUserByUsername = async (
+    username?: UserModelType['username']
+  ) => {
+    return Boolean((await service.where('username', username))?.[0]);
+  };
+
+  const expand = { create, checkHasUserByUsername };
   Object.assign(service, expand);
 
   return service as typeof service & typeof expand;

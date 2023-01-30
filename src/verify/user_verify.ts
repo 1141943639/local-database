@@ -11,31 +11,28 @@ export const passwordSchema = string()
   .required(handleErrMsg(userErrorType.passwordRequired))
   .min(1, handleErrMsg(userErrorType.passwordMin))
   .max(20, handleErrMsg(userErrorType.passwordMax));
-
 export const registerSchema = object({
   username: usernameSchema.test(
     'checkDup',
     handleErrMsg(userErrorType.usernameDup),
-    async (value) => {
-      const res = await userService.where('username', value);
-      return !res?.[0];
-    }
+    async (value) => !(await userService.checkHasUserByUsername(value))
   ),
   password: passwordSchema,
 });
 
+/**
+ * 详细的校验在checkExactlySame中间件 src\middleware\routes\user_middleware.ts
+ */
 export const loginSchema = object({
   username: usernameSchema,
   password: passwordSchema,
-}).test('checkDup', async (value) => {
-  const { username, password } = value;
+});
 
-  const userData = (await userService.where('username', username))[0];
-
-  // TODO 返回 user not found
-  if (!userData) return false;
-  // TODO 返回错误 Incorrect password
-  if (userData.password !== password) return false;
-
-  return true;
+export const changePwdSchema = object({
+  username: usernameSchema.test(
+    'checkDup',
+    handleErrMsg(userErrorType.userNotFound),
+    userService.checkHasUserByUsername
+  ),
+  password: passwordSchema,
 });

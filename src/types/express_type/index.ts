@@ -10,9 +10,7 @@ export interface Middleware<
   Par = RequestPar<Request>,
   Q = RequestQ<Request>
 > {
-  (
-    req: Request<Par, ResB, ReqB, Q>,
-    res: Response,
-    next: NextFunction
-  ): void | Promise<void>;
+  (req: Request<Par, ResB, ReqB, Q>, res: Response, next: NextFunction):
+    | unknown
+    | Promise<unknown>;
 }

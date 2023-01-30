@@ -8,3 +8,7 @@ export const DEFAULT_ERROR_HTTP_STATUS = 200;
  * 默认校验错误code
  */
 export const DEFAULT_VERIFY_ERROR_CODE = 2;
+/**
+ * token 过期时间
+ */
+export const JWT_EXPIRES = '1h';
